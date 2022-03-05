@@ -34,9 +34,9 @@
 
     <modules>
         <module>../../adapters/oidc/adapter-core</module>
-        <module>../../adapters/oidc/servlet-filter</module>
         <module>../../adapters/spi/adapter-spi</module>
         <module>../../adapters/spi/servlet-adapter-spi</module>
+        <module>../../adapters/oidc/servlet-filter</module>
         <module>../../authz/client</module>
     </modules>
 
@@ -64,6 +64,7 @@
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-servlet-filter-adapter</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
