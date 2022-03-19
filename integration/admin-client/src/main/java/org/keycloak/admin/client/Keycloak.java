@@ -25,7 +25,8 @@ import org.keycloak.admin.client.spi.ResteasyClientProvider;
 import org.keycloak.admin.client.token.TokenManager;
 
 import javax.net.ssl.SSLContext;
-import javax.ws.rs.client.Client;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.ServiceLoader;

@@ -83,6 +83,7 @@
         <hibernate.c3p0.version>5.6.10.Final</hibernate.c3p0.version>
         <infinispan.version>13.0.10.Final</infinispan.version>
         <version.jakarta-servlet>5.0.0</version.jakarta-servlet>
+        <version.jakarta-ws>3.0.0</version.jakarta-ws>
         <hibernate.core.version>5.3.24.Final</hibernate.core.version>
         <hibernate.c3p0.version>5.3.24.Final</hibernate.c3p0.version>
         <infinispan.version>12.1.7.Final</infinispan.version>
@@ -100,7 +101,8 @@
         <jboss.spec.javax.xml.bind.jboss-jaxb-api_2.3_spec.version>2.0.1.Final</jboss.spec.javax.xml.bind.jboss-jaxb-api_2.3_spec.version>
         <jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec.version>2.0.0.Final</jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec.version>
         <log4j.version>1.2.17</log4j.version>
-        <resteasy.version>4.7.4.Final</resteasy.version>
+        <resteasy.version>6.0.0.Final</resteasy.version>
+        <resteasy.version.old>4.7.4.Final</resteasy.version.old>
         <resteasy.undertow.version>${resteasy.version}</resteasy.undertow.version>
         <owasp.html.sanitizer.version>20211018.2</owasp.html.sanitizer.version>
         <slf4j-api.version>1.7.30</slf4j-api.version>
@@ -396,7 +398,7 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-core</artifactId>
-                <version>${resteasy.version}</version>
+                <version>${resteasy.version.old}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>log4j</groupId>
@@ -570,6 +572,12 @@
                 <groupId>jakarta.servlet</groupId>
                 <artifactId>jakarta.servlet-api</artifactId>
                 <version>${version.jakarta-servlet}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>${version.jakarta-ws}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
