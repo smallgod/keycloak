@@ -29,8 +29,8 @@
     <artifactId>keycloak-liberty-adapter-bom</artifactId>
     <packaging>pom</packaging>
 
-    <name>Keycloak BOM for AYINZA OpenLiberty adapters [BOM]</name>
-    <description>Keycloak BOM for AYINZA OpenLiberty JakartaEE 9 adapters</description>
+    <name>Keycloak BOM for AYINZA OpenLiberty Servlet Adapter [BOM]</name>
+    <description>Keycloak BOM for AYINZA OpenLiberty JakartaEE 9 Servlet Adapter BOM</description>
 
     <modules>
         <module>../../adapters/oidc/adapter-core</module>
@@ -38,6 +38,7 @@
         <module>../../adapters/spi/servlet-adapter-spi</module>
         <module>../../adapters/oidc/servlet-filter</module>
         <module>../../authz/client</module>
+        <module>../../integration/admin-client</module>
     </modules>
 
     <dependencyManagement>
@@ -76,6 +77,12 @@
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-authz-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-admin-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
