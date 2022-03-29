@@ -81,6 +81,7 @@ public class KeycloakBuilder {
     }
 
     public KeycloakBuilder username(String username) {
+
         this.username = username;
         return this;
     }
