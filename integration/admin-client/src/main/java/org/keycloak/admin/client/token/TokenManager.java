@@ -96,6 +96,7 @@ public class TokenManager {
     }
 
     public synchronized AccessTokenResponse refreshToken() {
+
         if (currentToken.getRefreshToken() == null) {
             return grantToken();
         }
