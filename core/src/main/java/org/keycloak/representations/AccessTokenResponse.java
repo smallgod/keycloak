@@ -20,6 +20,7 @@ package org.keycloak.representations;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.json.bind.annotation.JsonbProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,42 +32,55 @@ import java.util.Map;
  * @version $Revision: 1 $
  */
 public class AccessTokenResponse {
+
+    @JsonbProperty("access_token")
     @JsonProperty("access_token")
     protected String token;
 
+    @JsonbProperty("expires_in")
     @JsonProperty("expires_in")
     protected long expiresIn;
 
+    @JsonbProperty("refresh_expires_in")
     @JsonProperty("refresh_expires_in")
     protected long refreshExpiresIn;
 
+    @JsonbProperty("refresh_token")
     @JsonProperty("refresh_token")
     protected String refreshToken;
 
+    @JsonbProperty("token_type")
     @JsonProperty("token_type")
     protected String tokenType;
 
+    @JsonbProperty("id_token")
     @JsonProperty("id_token")
     protected String idToken;
 
+    @JsonbProperty("not-before-policy")
     @JsonProperty("not-before-policy")
     protected int notBeforePolicy;
 
+    @JsonbProperty("session_state")
     @JsonProperty("session_state")
     protected String sessionState;
 
     protected Map<String, Object> otherClaims = new HashMap<>();
 
     // OIDC Financial API Read Only Profile : scope MUST be returned in the response from Token Endpoint
+    @JsonbProperty("scope")
     @JsonProperty("scope")
     protected String scope;
 
+    @JsonbProperty("error")
     @JsonProperty("error")
     protected String error;
 
+    @JsonbProperty("error_description")
     @JsonProperty("error_description")
     protected String errorDescription;
 
+    @JsonbProperty("error_uri")
     @JsonProperty("error_uri")
     protected String errorUri;
 

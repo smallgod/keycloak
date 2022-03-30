@@ -33,6 +33,8 @@
     <description>Keycloak BOM for AYINZA OpenLiberty JakartaEE 9 Servlet Adapter BOM</description>
 
     <modules>
+        <module>../../core</module>
+        <module>../../common</module>
         <module>../../adapters/oidc/adapter-core</module>
         <module>../../adapters/spi/adapter-spi</module>
         <module>../../adapters/spi/servlet-adapter-spi</module>
@@ -47,6 +49,12 @@
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -80,11 +88,11 @@
                 <version>${project.version}</version>
             </dependency>
 
-<!--            <dependency>-->
-<!--                <groupId>org.keycloak</groupId>-->
-<!--                <artifactId>keycloak-admin-client</artifactId>-->
-<!--                <version>${project.version}</version>-->
-<!--            </dependency>-->
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-admin-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
