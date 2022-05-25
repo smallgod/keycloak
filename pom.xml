@@ -89,7 +89,7 @@
         <infinispan.version>12.1.7.Final</infinispan.version>
         <infinispan.protostream.processor.version>4.4.1.Final</infinispan.protostream.processor.version>
         <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
-        <jackson.version>2.12.1</jackson.version>
+        <jackson.version>2.13.2</jackson.version>
         <jackson.databind.version>${jackson.version}</jackson.databind.version>
         <jackson.annotations.version>${jackson.databind.version}</jackson.annotations.version>
         <json-bind-api.version>2.0.0</json-bind-api.version>
@@ -460,11 +460,13 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.databind.version}</version>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>

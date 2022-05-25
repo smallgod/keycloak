@@ -142,6 +142,7 @@ public class ServletHttpFacade implements HttpFacade {
 
         @Override
         public InputStream getInputStream(boolean buffered) {
+
             if (inputStream != null) {
                 return inputStream;
             }
