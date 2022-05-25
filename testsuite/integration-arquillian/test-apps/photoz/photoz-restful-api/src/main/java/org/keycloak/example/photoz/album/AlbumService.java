@@ -3,6 +3,7 @@ package org.keycloak.example.photoz.album;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.ClientAuthorizationContext;
+import org.keycloak.authorization.client.resource.ProtectedResource;
 import org.keycloak.example.photoz.CustomDatabase;
 import org.keycloak.example.photoz.entity.Album;
 import org.keycloak.representations.idm.authorization.ResourceRepresentation;
@@ -134,6 +135,11 @@ public class AlbumService {
         try {
             ProtectionResource protection = getAuthzClient().protection();
             List<ResourceRepresentation> search = protection.resource().findByUri(uri);
+
+            ProtectedResource resourceClient = getAuthzClient().protection().resource();
+            resourceClient.findByUri(uri);
+
+           // search.get(0).§
 
             if (search.isEmpty()) {
                 throw new RuntimeException("Could not find protected resource with URI [" + uri + "]");
