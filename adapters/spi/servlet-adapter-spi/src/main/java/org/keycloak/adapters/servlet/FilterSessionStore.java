@@ -17,17 +17,18 @@
 
 package org.keycloak.adapters.servlet;
 
+import jakarta.servlet.ReadListener;
 import org.keycloak.adapters.spi.AdapterSessionStore;
 import org.keycloak.adapters.spi.HttpFacade;
 import org.keycloak.adapters.spi.KeycloakAccount;
 import org.keycloak.common.util.Encode;
 import org.keycloak.common.util.MultivaluedHashMap;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -178,6 +179,19 @@ public class FilterSessionStore implements AdapterSessionStore {
                             public int read() throws IOException {
                                 return is.read();
                             }
+
+                            @Override
+                            public boolean isFinished() {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean isReady() {
+                                return false;
+                            }
+
+                            @Override
+                            public void setReadListener(ReadListener readListener) {}
                         };
                     }
                     return super.getInputStream();
