@@ -35,8 +35,8 @@
     <description>AYINZA: Customised Keycloak libraries compatible with JakartaEE 9 [BOM]</description>
 
     <modules>
-        <module>../../core</module>
         <module>../../common</module>
+        <module>../../core</module>
         <module>../../adapters/oidc/adapter-core</module>
         <module>../../adapters/spi/adapter-spi</module>
         <module>../../adapters/spi/servlet-adapter-spi</module>
