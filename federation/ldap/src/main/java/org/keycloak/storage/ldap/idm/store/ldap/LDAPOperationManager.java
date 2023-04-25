@@ -496,7 +496,6 @@ public class LDAPOperationManager {
         StartTlsResponse tlsResponse = null;
 
         try {
-
             Hashtable<Object, Object> env = LDAPContextManager.getNonAuthConnectionProperties(config);
 
             // Never use connection pool to prevent password caching

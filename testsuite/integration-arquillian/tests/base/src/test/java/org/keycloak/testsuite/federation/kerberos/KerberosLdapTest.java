@@ -40,16 +40,16 @@ import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.ldap.LDAPStorageProviderFactory;
 import org.keycloak.storage.ldap.kerberos.LDAPProviderKerberosConfig;
 import org.keycloak.testsuite.ProfileAssume;
-import org.keycloak.testsuite.arquillian.annotation.DisableFeature;
+import org.keycloak.testsuite.util.AccountHelper;
 import org.keycloak.testsuite.util.KerberosRule;
 import org.keycloak.testsuite.KerberosEmbeddedServer;
+import org.keycloak.testsuite.util.TestAppHelper;
 
 /**
  * Test for the LDAPStorageProvider with kerberos enabled (kerberos with LDAP integration)
  *
  * @author <a href="mailto:mposolda@redhat.com">Marek Posolda</a>
  */
-@DisableFeature(value = Profile.Feature.ACCOUNT2, skipRestart = true) // TODO remove this (KEYCLOAK-16228)
 public class KerberosLdapTest extends AbstractKerberosSingleRealmTest {
     private static final String PROVIDER_CONFIG_LOCATION = "classpath:kerberos/kerberos-ldap-connection.properties";
 
@@ -121,41 +121,29 @@ public class KerberosLdapTest extends AbstractKerberosSingleRealmTest {
     public void validatePasswordPolicyTest() throws Exception{
          updateProviderEditMode(UserStorageProvider.EditMode.WRITABLE);
 
-         changePasswordPage.open();
+         loginPage.open();
          loginPage.login("jduke", "theduke");
 
          updateProviderValidatePasswordPolicy(true);
-         changePasswordPage.changePassword("theduke", "jduke", "jduke");
-         Assert.assertTrue(driver.getPageSource().contains("Invalid"));
+
+         Assert.assertFalse(AccountHelper.updatePassword(testRealmResource(), "jduke", "jduke"));
 
          updateProviderValidatePasswordPolicy(false);
-         changePasswordPage.changePassword("theduke", "jduke", "jduke");
-         Assert.assertTrue(driver.getPageSource().contains("Your password has been updated."));
+         Assert.assertTrue(AccountHelper.updatePassword(testRealmResource(), "jduke", "jduke"));
 
          // Change password back
-         changePasswordPage.open();
-         changePasswordPage.changePassword("jduke", "theduke", "theduke");
+         Assert.assertTrue(AccountHelper.updatePassword(testRealmResource(), "jduke", "theduke"));
     }
 
     @Test
     public void writableEditModeTest() throws Exception {
+        TestAppHelper testAppHelper = new TestAppHelper(oauth, loginPage, appPage);
+
         // Change editMode to WRITABLE
         updateProviderEditMode(UserStorageProvider.EditMode.WRITABLE);
 
-        // Login with username/password from kerberos
-        changePasswordPage.open();
-        // Only needed if you are providing a click thru to bypass kerberos.  Currently there is a javascript
-        // to forward the user if kerberos isn't enabled.
-        //bypassPage.isCurrent();
-        //bypassPage.clickContinue();
-        loginPage.assertCurrent();
-        loginPage.login("jduke", "theduke");
-        Assert.assertTrue(changePasswordPage.isCurrent());
-
         // Successfully change password now
-        changePasswordPage.changePassword("theduke", "newPass", "newPass");
-        Assert.assertTrue(driver.getPageSource().contains("Your password has been updated."));
-        changePasswordPage.logout();
+        Assert.assertTrue(AccountHelper.updatePassword(testRealmResource(), "jduke", "newPass"));
 
         // Only needed if you are providing a click thru to bypass kerberos.  Currently there is a javascript
         // to forward the user if kerberos isn't enabled.
@@ -163,11 +151,9 @@ public class KerberosLdapTest extends AbstractKerberosSingleRealmTest {
         //bypassPage.clickContinue();
 
         // Login with old password doesn't work, but with new password works
-        loginPage.login("jduke", "theduke");
-        Assert.assertTrue(loginPage.isCurrent());
-        loginPage.login("jduke", "newPass");
-        changePasswordPage.assertCurrent();
-        changePasswordPage.logout();
+
+        Assert.assertFalse(testAppHelper.login("jduke", "theduke"));
+        Assert.assertTrue(testAppHelper.login("jduke", "newPass"));
 
         // Assert SPNEGO login with the new password as mode is writable
         events.clear();
@@ -187,9 +173,6 @@ public class KerberosLdapTest extends AbstractKerberosSingleRealmTest {
         assertAuthenticationSuccess(codeUrl);
 
         // Change password back
-        changePasswordPage.open();
-        loginPage.login("jduke", "newPass");
-        changePasswordPage.assertCurrent();
-        changePasswordPage.changePassword("newPass", "theduke", "theduke");
+        Assert.assertTrue(AccountHelper.updatePassword(testRealmResource(), "jduke", "theduke"));
     }
 }

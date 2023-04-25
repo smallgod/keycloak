@@ -241,7 +241,8 @@ public class OIDCLoginProtocol implements LoginProtocol {
                     authSession.getClientNote(OAuth2Constants.SCOPE),
                     authSession.getClientNote(OIDCLoginProtocol.REDIRECT_URI_PARAM),
                     authSession.getClientNote(OIDCLoginProtocol.CODE_CHALLENGE_PARAM),
-                    authSession.getClientNote(OIDCLoginProtocol.CODE_CHALLENGE_METHOD_PARAM));
+                    authSession.getClientNote(OIDCLoginProtocol.CODE_CHALLENGE_METHOD_PARAM),
+                    userSession.getId());
 
             code = OAuth2CodeParser.persistCode(session, clientSession, codeData);
             redirectUri.addParam(OAuth2Constants.CODE, code);
@@ -325,8 +326,13 @@ public class OIDCLoginProtocol implements LoginProtocol {
         if (state != null) {
             redirectUri.addParam(OAuth2Constants.STATE, state);
         }
-        
-        new AuthenticationSessionManager(session).removeAuthenticationSession(realm, authSession, true);
+
+        if (error == Error.PASSIVE_LOGIN_REQUIRED || error == Error.PASSIVE_INTERACTION_REQUIRED) {
+            // passive check error, just delete the tabId maintaining session and don't reset the restart cookie
+            new AuthenticationSessionManager(session).removeTabIdInAuthenticationSession(realm, authSession);
+        } else {
+            new AuthenticationSessionManager(session).removeAuthenticationSession(realm, authSession, true);
+        }
         return redirectUri.build();
     }
 

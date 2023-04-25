@@ -19,6 +19,7 @@ package org.keycloak.admin.client.resource;
 import org.keycloak.representations.idm.ComponentRepresentation;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -58,6 +59,10 @@ public interface ComponentsResource {
 
     @Path("{id}")
     ComponentResource component(@PathParam("id") String id);
+
+    @Path("{id}")
+    @DELETE
+    ComponentResource removeComponent(@PathParam("id") String id);
 
 
 }

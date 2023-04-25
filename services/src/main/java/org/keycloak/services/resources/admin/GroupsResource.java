@@ -18,7 +18,6 @@ package org.keycloak.services.resources.admin;
 
 import org.jboss.resteasy.annotations.cache.NoCache;
 import javax.ws.rs.NotFoundException;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.keycloak.common.util.ObjectUtil;
 import org.keycloak.events.admin.OperationType;
 import org.keycloak.events.admin.ResourceType;
@@ -107,9 +106,7 @@ public class GroupsResource {
         if (group == null) {
             throw new NotFoundException("Could not find group by id");
         }
-        GroupResource resource =  new GroupResource(realm, group, session, this.auth, adminEvent);
-        ResteasyProviderFactory.getInstance().injectProperties(resource);
-        return resource;
+        return new GroupResource(realm, group, session, this.auth, adminEvent);
     }
 
     /**
@@ -150,7 +147,7 @@ public class GroupsResource {
         String groupName = rep.getName();
 
         if (ObjectUtil.isBlank(groupName)) {
-            return ErrorResponse.error("Group name is missing", Response.Status.BAD_REQUEST);
+            throw ErrorResponse.error("Group name is missing", Response.Status.BAD_REQUEST);
         }
 
         try {
@@ -172,7 +169,7 @@ public class GroupsResource {
                 adminEvent.operation(OperationType.CREATE).resourcePath(session.getContext().getUri(), child.getId());
             }
         } catch (ModelDuplicateException mde) {
-            return ErrorResponse.exists("Top level group named '" + groupName + "' already exists.");
+            throw ErrorResponse.exists("Top level group named '" + groupName + "' already exists.");
         }
 
         adminEvent.representation(rep).success();

@@ -37,14 +37,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.spi.HttpRequest;
+import org.keycloak.http.HttpRequest;
 import org.keycloak.broker.social.SocialIdentityProvider;
 import org.keycloak.common.util.Base64Url;
 import org.keycloak.events.Details;
 import org.keycloak.events.EventBuilder;
 import org.keycloak.events.EventType;
 import org.keycloak.models.AccountRoles;
-import org.keycloak.models.ClientModel;
 import org.keycloak.models.FederatedIdentityModel;
 import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
@@ -74,7 +73,6 @@ public class LinkedAccountsResource {
     
     private final KeycloakSession session;
     private final HttpRequest request;
-    private final ClientModel client;
     private final EventBuilder event;
     private final UserModel user;
     private final RealmModel realm;
@@ -82,13 +80,11 @@ public class LinkedAccountsResource {
 
     public LinkedAccountsResource(KeycloakSession session, 
                                   HttpRequest request, 
-                                  ClientModel client,
-                                  Auth auth, 
+                                  Auth auth,
                                   EventBuilder event, 
                                   UserModel user) {
         this.session = session;
         this.request = request;
-        this.client = client;
         this.auth = auth;
         this.event = event;
         this.user = user;
@@ -158,10 +154,10 @@ public class LinkedAccountsResource {
         
         String errorMessage = checkCommonPreconditions(providerId);
         if (errorMessage != null) {
-            return ErrorResponse.error(errorMessage, Response.Status.BAD_REQUEST);
+            throw ErrorResponse.error(errorMessage, Response.Status.BAD_REQUEST);
         }
         if (auth.getSession() == null) {
-            return ErrorResponse.error(Messages.SESSION_NOT_ACTIVE, Response.Status.BAD_REQUEST);
+            throw ErrorResponse.error(Messages.SESSION_NOT_ACTIVE, Response.Status.BAD_REQUEST);
         }
         
         try {
@@ -188,7 +184,7 @@ public class LinkedAccountsResource {
             return Cors.add(request, Response.ok(rep)).auth().allowedOrigins(auth.getToken()).build();
         } catch (Exception spe) {
             spe.printStackTrace();
-            return ErrorResponse.error(Messages.FAILED_TO_PROCESS_RESPONSE, Response.Status.INTERNAL_SERVER_ERROR);
+            throw ErrorResponse.error(Messages.FAILED_TO_PROCESS_RESPONSE, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
     
@@ -200,17 +196,17 @@ public class LinkedAccountsResource {
         
         String errorMessage = checkCommonPreconditions(providerId);
         if (errorMessage != null) {
-            return ErrorResponse.error(errorMessage, Response.Status.BAD_REQUEST);
+            throw ErrorResponse.error(errorMessage, Response.Status.BAD_REQUEST);
         }
         
         FederatedIdentityModel link = session.users().getFederatedIdentity(realm, user, providerId);
         if (link == null) {
-            return ErrorResponse.error(Messages.FEDERATED_IDENTITY_NOT_ACTIVE, Response.Status.BAD_REQUEST);
+            throw ErrorResponse.error(Messages.FEDERATED_IDENTITY_NOT_ACTIVE, Response.Status.BAD_REQUEST);
         }
 
         // Removing last social provider is not possible if you don't have other possibility to authenticate
         if (!(session.users().getFederatedIdentitiesStream(realm, user).count() > 1 || user.getFederationLink() != null || isPasswordSet())) {
-            return ErrorResponse.error(Messages.FEDERATED_IDENTITY_REMOVING_LAST_PROVIDER, Response.Status.BAD_REQUEST);
+            throw ErrorResponse.error(Messages.FEDERATED_IDENTITY_REMOVING_LAST_PROVIDER, Response.Status.BAD_REQUEST);
         }
         
         session.users().removeFederatedIdentity(realm, user, providerId);

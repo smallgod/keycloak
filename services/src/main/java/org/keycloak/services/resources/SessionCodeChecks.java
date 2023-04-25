@@ -17,8 +17,8 @@
 
 package org.keycloak.services.resources;
 
-import static org.keycloak.services.managers.AuthenticationManager.KEYCLOAK_IDENTITY_COOKIE;
 import static org.keycloak.services.managers.AuthenticationManager.authenticateIdentityCookie;
+import static org.keycloak.services.managers.AuthenticationSessionManager.AUTH_SESSION_ID;
 import static org.keycloak.utils.LockObjectsForModification.lockUserSessionsForModification;
 
 import java.net.URI;
@@ -29,7 +29,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.spi.HttpRequest;
+import org.keycloak.http.HttpRequest;
 import org.keycloak.authentication.AuthenticationProcessor;
 import org.keycloak.common.ClientConnection;
 import org.keycloak.common.util.ObjectUtil;
@@ -184,8 +184,10 @@ public class SessionCodeChecks {
         // See if we are already authenticated and userSession with same ID exists.
         UserSessionModel userSession = authSessionManager.getUserSessionFromAuthCookie(realm);
 
-        if (userSession == null) {
-            // fallback to check if there is an identity cookie
+        boolean authenticating = !CookieHelper.getCookieValue(session, AUTH_SESSION_ID).isEmpty();
+
+        if (authenticating) {
+            // if there is an auth session, make sure the user is not yet authenticated
             AuthenticationManager.AuthResult authResult = lockUserSessionsForModification(session, () -> authenticateIdentityCookie(session, realm, false));
 
             if (authResult != null) {
@@ -272,7 +274,7 @@ public class SessionCodeChecks {
                 // Allow refresh, but rewrite browser history
                 if (execution == null && lastExecFromSession != null) {
                     logger.debugf("Parameter 'execution' is not in the request, but flow wasn't changed. Will update browser history");
-                    request.setAttribute(BrowserHistoryHelper.SHOULD_UPDATE_BROWSER_HISTORY, true);
+                    session.setAttribute(BrowserHistoryHelper.SHOULD_UPDATE_BROWSER_HISTORY, true);
                 }
 
                 return true;

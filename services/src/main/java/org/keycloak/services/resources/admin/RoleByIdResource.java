@@ -43,7 +43,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -59,16 +58,15 @@ import java.util.stream.Stream;
 public class RoleByIdResource extends RoleResource {
     protected static final Logger logger = Logger.getLogger(RoleByIdResource.class);
     private final RealmModel realm;
-    private AdminPermissionEvaluator auth;
-    private AdminEventBuilder adminEvent;
+    private final AdminPermissionEvaluator auth;
+    private final AdminEventBuilder adminEvent;
 
-    @Context
-    private KeycloakSession session;
+    private final KeycloakSession session;
 
-    public RoleByIdResource(RealmModel realm, AdminPermissionEvaluator auth, AdminEventBuilder adminEvent) {
-        super(realm);
-
-        this.realm = realm;
+    public RoleByIdResource(KeycloakSession session, AdminPermissionEvaluator auth, AdminEventBuilder adminEvent) {
+        super(session.getContext().getRealm());
+        this.session = session;
+        this.realm = session.getContext().getRealm();
         this.auth = auth;
         this.adminEvent = adminEvent;
     }
@@ -110,8 +108,8 @@ public class RoleByIdResource extends RoleResource {
         if (realm.getDefaultRole() == null) {
             logger.warnf("Default role for realm with id '%s' doesn't exist.", realm.getId());
         } else if (realm.getDefaultRole().getId().equals(id)) {
-            throw new ErrorResponseException(ErrorResponse.error(realm.getDefaultRole().getName() + " is default role of the realm and cannot be removed.", 
-                    Response.Status.BAD_REQUEST));
+            throw ErrorResponse.error(realm.getDefaultRole().getName() + " is default role of the realm and cannot be removed.",
+                    Response.Status.BAD_REQUEST);
         }
 
         RoleModel role = getRoleModel(id);

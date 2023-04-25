@@ -18,10 +18,8 @@
 package org.keycloak.testsuite.admin;
 
 import org.hamcrest.Matchers;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.keycloak.admin.client.Keycloak;
@@ -299,7 +297,22 @@ public class PermissionsTest extends AbstractKeycloakTest {
                 realm.toRepresentation();
             }
         }, Resource.REALM, false, true);
-        assertGettersEmpty(clients.get(AdminRoles.QUERY_REALMS).realm(REALM_NAME).toRepresentation());
+
+        {
+            RealmRepresentation realm = clients.get(AdminRoles.QUERY_REALMS).realm(REALM_NAME).toRepresentation();
+            assertGettersEmpty(realm);
+            assertNull(realm.isRegistrationEmailAsUsername());
+
+            realm = clients.get(AdminRoles.VIEW_USERS).realm(REALM_NAME).toRepresentation();
+            assertNotNull(realm.isRegistrationEmailAsUsername());
+
+            realm = clients.get(AdminRoles.MANAGE_USERS).realm(REALM_NAME).toRepresentation();
+            assertNotNull(realm.isRegistrationEmailAsUsername());
+
+            // query users only if granted through fine-grained admin
+            realm = clients.get(AdminRoles.QUERY_USERS).realm(REALM_NAME).toRepresentation();
+            assertNull(realm.isRegistrationEmailAsUsername());
+        }
 
         // this should pass given that users granted with "query" roles are allowed to access the realm with limited access
         for (String role : AdminRoles.ALL_QUERY_ROLES) {
@@ -642,12 +655,12 @@ public class PermissionsTest extends AbstractKeycloakTest {
 
         invoke(new Invocation() {
             public void invoke(RealmResource realm) {
-                realm.clients().get(foo.getId()).getCertficateResource("nosuch").uploadJks(new MultipartFormDataOutput());
+                realm.clients().get(foo.getId()).getCertficateResource("nosuch").uploadJks(null);
             }
         }, Resource.CLIENT, true);
         invoke(new Invocation() {
             public void invoke(RealmResource realm) {
-                realm.clients().get(foo.getId()).getCertficateResource("nosuch").uploadJksCertificate(new MultipartFormDataOutput());
+                realm.clients().get(foo.getId()).getCertficateResource("nosuch").uploadJksCertificate(null);
             }
         }, Resource.CLIENT, true);
 
@@ -1727,7 +1740,7 @@ public class PermissionsTest extends AbstractKeycloakTest {
         }, Resource.IDENTITY_PROVIDER, true);
         invoke(new Invocation() {
             public void invoke(RealmResource realm) {
-                realm.identityProviders().importFrom(new MultipartFormDataOutput());
+                realm.identityProviders().importFrom(null);
             }
         }, Resource.IDENTITY_PROVIDER, true);
     }

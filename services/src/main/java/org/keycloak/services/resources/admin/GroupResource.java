@@ -18,7 +18,6 @@ package org.keycloak.services.resources.admin;
 
 import org.jboss.resteasy.annotations.cache.NoCache;
 import javax.ws.rs.NotFoundException;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.keycloak.common.util.ObjectUtil;
 import org.keycloak.events.admin.OperationType;
 import org.keycloak.events.admin.ResourceType;
@@ -32,6 +31,7 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.ManagementPermissionReference;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.services.ErrorResponse;
+import org.keycloak.services.Urls;
 import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
 import org.keycloak.services.resources.admin.permissions.AdminPermissionManagement;
 import org.keycloak.services.resources.admin.permissions.AdminPermissions;
@@ -104,14 +104,14 @@ public class GroupResource {
 
         String groupName = rep.getName();
         if (ObjectUtil.isBlank(groupName)) {
-            return ErrorResponse.error("Group name is missing", Response.Status.BAD_REQUEST);
+            throw ErrorResponse.error("Group name is missing", Response.Status.BAD_REQUEST);
         }
 
         if (!Objects.equals(groupName, group.getName())) {
             boolean exists = siblings().filter(s -> !Objects.equals(s.getId(), group.getId()))
                     .anyMatch(s -> Objects.equals(s.getName(), groupName));
             if (exists) {
-                return ErrorResponse.exists("Sibling group named '" + groupName + "' already exists.");
+                throw ErrorResponse.exists("Sibling group named '" + groupName + "' already exists.");
             }
         }
         
@@ -154,7 +154,11 @@ public class GroupResource {
 
         String groupName = rep.getName();
         if (ObjectUtil.isBlank(groupName)) {
-            return ErrorResponse.error("Group name is missing", Response.Status.BAD_REQUEST);
+            throw ErrorResponse.error("Group name is missing", Response.Status.BAD_REQUEST);
+        }
+        boolean childExists = group.getSubGroupsStream().anyMatch(s -> Objects.equals(s.getName(), groupName));
+        if (childExists) {
+            throw ErrorResponse.exists("Sibling group named '" + groupName + "' already exists.");
         }
 
         Response.ResponseBuilder builder = Response.status(204);
@@ -170,8 +174,12 @@ public class GroupResource {
             child = realm.createGroup(groupName, group);
             updateGroup(rep, child, realm, session);
             URI uri = session.getContext().getUri().getBaseUriBuilder()
-                                           .path(session.getContext().getUri().getMatchedURIs().get(2))
-                                           .path(child.getId()).build();
+                    .path(AdminRoot.class)
+                    .path(AdminRoot.class, "getRealmsAdmin")
+                    .path(RealmsAdminResource.class, "getRealmAdmin")
+                    .path(RealmAdminResource.class, "getGroups")
+                    .path(GroupsResource.class, "getGroupById")
+                    .build(realm.getName(), child.getId());
             builder.status(201).location(uri);
             rep.setId(child.getId());
             adminEvent.operation(OperationType.CREATE);
@@ -237,9 +245,7 @@ public class GroupResource {
     public RoleMapperResource getRoleMappings() {
         AdminPermissionEvaluator.RequirePermissionCheck manageCheck = () -> auth.groups().requireManage(group);
         AdminPermissionEvaluator.RequirePermissionCheck viewCheck = () -> auth.groups().requireView(group);
-        RoleMapperResource resource =  new RoleMapperResource(realm, auth, group, adminEvent, manageCheck, viewCheck);
-        ResteasyProviderFactory.getInstance().injectProperties(resource);
-        return resource;
+        return new RoleMapperResource(session, auth, group, adminEvent, manageCheck, viewCheck);
 
     }
 

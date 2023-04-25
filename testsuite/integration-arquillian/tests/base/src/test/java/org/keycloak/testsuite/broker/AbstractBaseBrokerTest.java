@@ -33,9 +33,7 @@ import org.keycloak.services.resources.RealmsResource;
 import org.keycloak.testsuite.AbstractKeycloakTest;
 import org.keycloak.testsuite.Assert;
 import org.keycloak.testsuite.arquillian.annotation.DisableFeature;
-import org.keycloak.testsuite.pages.AccountApplicationsPage;
 import org.keycloak.testsuite.pages.AccountFederatedIdentityPage;
-import org.keycloak.testsuite.pages.AccountPasswordPage;
 import org.keycloak.testsuite.pages.AccountUpdateProfilePage;
 import org.keycloak.testsuite.pages.ErrorPage;
 import org.keycloak.testsuite.pages.IdpConfirmLinkPage;
@@ -95,9 +93,6 @@ public abstract class AbstractBaseBrokerTest extends AbstractKeycloakTest {
     protected UpdateAccountInformationPage updateAccountInformationPage;
 
     @Page
-    protected AccountPasswordPage accountPasswordPage;
-
-    @Page
     protected ErrorPage errorPage;
 
     @Page
@@ -132,9 +127,6 @@ public abstract class AbstractBaseBrokerTest extends AbstractKeycloakTest {
 
     @Page
     protected AccountFederatedIdentityPage accountFederatedIdentityPage;
-
-    @Page
-    protected AccountApplicationsPage accountApplicationsPage;
 
     @Page
     protected OAuthGrantPage grantPage;
