@@ -23,7 +23,7 @@
     <groupId>com.ayinza.util</groupId>
     <artifactId>ayinza.keycloak-custom-util</artifactId>
     <packaging>pom</packaging>
-    <version>21.1.0</version>
+    <version>23.0.0</version>
 
     <name>AYINZA Tech: Customised Keycloak libraries [BOM]</name>
     <description>AYINZA: Customised Keycloak libraries compatible with JakartaEE 9 [BOM]</description>

@@ -1717,7 +1717,7 @@ spec:
       oauth2DevicePollingInterval: '5'
       parRequestUriLifespan: '60'
       cibaInterval: '5'
-    keycloakVersion: 21.1.0
+    keycloakVersion: 23.0.0
     userManagedAccessAllowed: false
     clientProfiles:
       profiles: []

@@ -125,7 +125,7 @@ By default, the console log handler logs plain unstructured data to the console.
 .Example Log Message
 [source, json]
 ----
-{"timestamp":"2022-02-25T10:31:32.452+01:00","sequence":8442,"loggerClassName":"org.jboss.logging.Logger","loggerName":"io.quarkus","level":"INFO","message":"Keycloak 21.1.0 on JVM (powered by Quarkus 2.7.2.Final) started in 3.253s. Listening on: http://0.0.0.0:8080","threadName":"main","threadId":1,"mdc":{},"ndc":"","hostName":"host-name","processName":"QuarkusEntryPoint","processId":36946}
+{"timestamp":"2022-02-25T10:31:32.452+01:00","sequence":8442,"loggerClassName":"org.jboss.logging.Logger","loggerName":"io.quarkus","level":"INFO","message":"Keycloak 23.0.0 on JVM (powered by Quarkus 2.7.2.Final) started in 3.253s. Listening on: http://0.0.0.0:8080","threadName":"main","threadId":1,"mdc":{},"ndc":"","hostName":"host-name","processName":"QuarkusEntryPoint","processId":36946}
 ----
 
 When using JSON output, colors are disabled and the format settings set by `--log-console-format` will not apply.
@@ -137,7 +137,7 @@ To use unstructured logging, enter the following command:
 .Example Log Message:
 [source, bash]
 ----
-2022-03-02 10:36:50,603 INFO  [io.quarkus] (main) Keycloak 21.1.0 on JVM (powered by Quarkus 2.7.2.Final) started in 3.615s. Listening on: http://0.0.0.0:8080
+2022-03-02 10:36:50,603 INFO  [io.quarkus] (main) Keycloak 23.0.0 on JVM (powered by Quarkus 2.7.2.Final) started in 3.615s. Listening on: http://0.0.0.0:8080
 ----
 
 === Colors

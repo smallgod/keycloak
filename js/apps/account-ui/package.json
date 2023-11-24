@@ -7,21 +7,21 @@
     "lint": "wireit"
   },
   "dependencies": {
-    "@keycloak/keycloak-admin-client": "21.1.0",
+    "@keycloak/keycloak-admin-client": "23.0.0",
     "@patternfly/patternfly": "^4.224.2",
     "@patternfly/react-core": "^4.276.8",
     "@patternfly/react-icons": "^4.93.6",
     "i18next": "^22.4.14",
     "i18next-http-backend": "^2.2.0",
-    "keycloak-js": "21.1.0",
-    "keycloak-masthead": "21.1.0",
+    "keycloak-js": "23.0.0",
+    "keycloak-masthead": "23.0.0",
     "lodash-es": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.9",
     "react-i18next": "^12.2.0",
     "react-router-dom": "6.10.0",
-    "ui-shared": "21.1.0"
+    "ui-shared": "23.0.0"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.7",
@@ -65,5 +65,5 @@
       ]
     }
   },
-  "version": "21.1.0"
+  "version": "23.0.0"
 }
